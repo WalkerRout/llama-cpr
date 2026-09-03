@@ -1,0 +1,32 @@
+[package]
+name = "llama-cpr"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# networking
+axum = "0.8.1"
+tokio = { version = "1.43.0", default-features = false, features = ["rt", "macros", "time"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "stream"] }
+# streaming
+async-stream = "0.3.6"
+eventsource-stream = "0.2.3"
+futures-util = "0.3.31"
+bytes = "1.9.0"
+# logging
+tracing = "0.1.41"
+tracing-subscriber = "0.3.19"
+log-panics = "2.1.0"
+# error handling
+thiserror = "2.0.16"
+# util
+serde_json = "1.0.149"
+
+[target.'cfg(target_env = "musl")'.dependencies]
+mimalloc = "0.1.43"
+
+[profile.release]
+opt-level = "s"
+strip = "symbols"
+panic = "abort"
+lto = "fat"
