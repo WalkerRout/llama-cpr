@@ -13,10 +13,10 @@ use crate::state::AppState;
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
   #[error("failed to bind to address - {0}")]
-  BindError(io::Error),
+  Bind(io::Error),
 
   #[error("server error - {0}")]
-  ServeError(io::Error),
+  Serve(io::Error),
 }
 
 pub struct Server {
@@ -35,11 +35,11 @@ impl Server {
     let app = proxy::router().with_state(state);
     let listener = TcpListener::bind((address, port))
       .await
-      .map_err(Error::BindError)?;
+      .map_err(Error::Bind)?;
 
     info!(
       "listening on {}",
-      listener.local_addr().map_err(Error::BindError)?
+      listener.local_addr().map_err(Error::Bind)?
     );
 
     Ok(Self { app, listener })
@@ -49,6 +49,6 @@ impl Server {
     info!("running server...");
     axum::serve(self.listener, self.app)
       .await
-      .map_err(Error::ServeError)
+      .map_err(Error::Serve)
   }
 }
